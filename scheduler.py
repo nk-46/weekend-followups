@@ -14,15 +14,7 @@ if __name__ == "__main__":
     scheduler.add_job(rotate_logs, 'cron', day=1, hour=0, minute=0)  # First day of every month at midnight
     scheduler.start()
 
-# Keep the script running
-    try:
-        print("Scheduler is running in the background. Press Ctrl+C to exit.")
-        while True:
-            time.sleep(1)  # Keeps the script alive
-    except (KeyboardInterrupt, SystemExit):
-        scheduler.shutdown()  # Shut down the scheduler gracefully
-        print("Scheduler stopped.")
-        
+
     print("Scheduler is running...")
     while True:
         schedule.run_pending()  # Check if a scheduled job needs to run
