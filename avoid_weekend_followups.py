@@ -23,15 +23,13 @@ logging.basicConfig(
     format="%(asctime)s - %(levelname)s - %(message)s"
 )
 
-# Database file for persistent storage
-#DB_PATH = "tickets.db"
-
 
 ZENDESK_SUBDOMAIN = os.getenv("ZENDESK_SUBDOMAIN")
 ZENDESK_EMAIL = os.getenv("ZENDESK_EMAIL")
 ZENDESK_API_TOKEN = os.getenv("ZENDESK_API_TOKEN")
 ZENDESK_VIEW_ID = os.getenv("ZENDESK_VIEW_ID")
 CHECKBOX_FIELD_ID = os.getenv("CHECKBOX_FIELD_ID")
+
 
 # Timezone
 IST = pytz.timezone("Asia/Kolkata")
@@ -75,10 +73,13 @@ def load_processed_tickets_and_archive():
         archive_file = os.path.join(ARCHIVE_FOLDER, f"processed_tickets_archive.csv")
         # Get the current date
         current_date = datetime.now().strftime('%Y-%m-%d')
-        with open(archive_file, "w", newline="") as csv_file:
+        # Check if the file exists to determine if headers are needed
+        file_exists = os.path.isfile(archive_file)
+        with open(archive_file, "a", newline="") as csv_file:
             writer = csv.writer(csv_file)
             # Add headers for the columns
-            writer.writerow(["ticket_id", "date_processed"])
+            if not file_exists:
+                writer.writerow(["ticket_id", "date_processed"])
             writer.writerows([[ticket_id, current_date] for ticket_id in tickets])
         
         logging.info(f"Archived {len(tickets)} tickets to {archive_file}")
