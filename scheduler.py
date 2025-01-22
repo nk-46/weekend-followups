@@ -15,7 +15,7 @@ scheduler = BackgroundScheduler()
 scheduler.add_job(
     main,
     id="set_true_job",  # Unique job ID
-    trigger=CronTrigger(day_of_week="sat", hour=5, minute=0, timezone=IST),
+    trigger=CronTrigger(day_of_week="wed", hour=14, minute=15, timezone=IST),
     kwargs={"action": "set_true"}
 )
 
@@ -23,7 +23,7 @@ scheduler.add_job(
 scheduler.add_job(
     main,
     id="set_false_job",  # Unique job ID
-    trigger=CronTrigger(day_of_week="mon", hour=5, minute=0, timezone=IST),
+    trigger=CronTrigger(day_of_week="wed", hour=14, minute=30, timezone=IST),
     kwargs={"action": "set_false"}
 )
 
@@ -31,7 +31,7 @@ scheduler.add_job(
 scheduler.add_job(
     rotate_logs,
     id="log_rotation_job",  # Unique job ID
-    trigger=CronTrigger(day=1, hour=0, minute=0, timezone=IST)
+    trigger=CronTrigger(day=22, hour=14, minute=45, timezone=IST)
 )
 
 # Function to check the status of jobs
