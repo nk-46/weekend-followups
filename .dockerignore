@@ -4,3 +4,4 @@
 **/archives
 **/.DS_Store
 fly.toml
+.env

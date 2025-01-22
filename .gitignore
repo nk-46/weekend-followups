@@ -2,3 +2,4 @@ zendesk_weekend_check.log
 tickets.db
 archives
 .DS_Store
+.env
