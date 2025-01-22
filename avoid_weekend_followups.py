@@ -8,7 +8,6 @@ import csv
 import gzip
 import shutil
 import csv
-from dotenv import load_dotenv
 
 # Setup logging
 LOG_FILE = "/data/zendesk_weekend_check.log"
