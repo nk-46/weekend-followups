@@ -37,7 +37,7 @@ scheduler.add_job(
 scheduler.add_job(
     rotate_logs,
     id="log_rotation_job",  # Unique job ID
-    trigger=CronTrigger(day=22, hour=19, minute=25, timezone=IST)
+    trigger=CronTrigger(day=22, hour=19, minute=23, timezone=IST)
 )
 
 # Function to check the status of jobs
@@ -65,7 +65,7 @@ def monitor_jobs():
                 scheduler.add_job(
                     rotate_logs,
                     id="log_rotation_job",
-                    trigger=CronTrigger(day=22, hour=19, minute=25, timezone=IST)
+                    trigger=CronTrigger(day=22, hour=19, minute=23, timezone=IST)
                 )
             print(f"Job {job.id} restarted.")
         else:
