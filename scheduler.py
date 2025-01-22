@@ -15,7 +15,7 @@ scheduler = BackgroundScheduler()
 scheduler.add_job(
     main,
     id="set_true_job",  # Unique job ID
-    trigger=CronTrigger(day_of_week="wed", hour=14, minute=15, timezone=IST),
+    trigger=CronTrigger(day_of_week="wed", hour=14, minute=20, timezone=IST),
     kwargs={"action": "set_true"}
 )
 
