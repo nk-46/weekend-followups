@@ -72,7 +72,7 @@ def load_processed_tickets_and_archive():
     if tickets:
         archive_file = os.path.join(ARCHIVE_FOLDER, f"processed_tickets_archive.csv")
         # Get the current date
-        current_date = datetime.now().strftime('%Y-%m-%d')
+        current_date = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
         # Check if the file exists to determine if headers are needed
         file_exists = os.path.isfile(archive_file)
         with open(archive_file, "a", newline="") as csv_file:
