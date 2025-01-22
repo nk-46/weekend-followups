@@ -17,12 +17,7 @@ primary_region = 'sjc'
   force_https = true
   auto_stop_machines = 'stop'
   auto_start_machines = true
-  min_machines_running = 0
-  processes = ['app']
-  [http_service.health_checks]
-    path = "/health"
-    interval = "15s"
-    timeout = "5s"
+  min_machines_running = 1
 
 
 [[vm]]

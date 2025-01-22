@@ -16,16 +16,12 @@ app = Flask(__name__)
 # Initialize BackgroundScheduler
 scheduler = BackgroundScheduler()
 
-#Create path for heath check
-@app.route("/health", methods = ["GET"])
-def health_check():
-    return 'OK', 200
 
 # Schedule main function for Saturdays at 5:00 AM IST
 scheduler.add_job(
     main,
     id="set_true_job",  # Unique job ID
-    trigger=CronTrigger(day_of_week="wed", hour=16, minute=30, timezone=IST),
+    trigger=CronTrigger(day_of_week="wed", hour=17, minute=00, timezone=IST),
     kwargs={"action": "set_true"}
 )
 
@@ -33,7 +29,7 @@ scheduler.add_job(
 scheduler.add_job(
     main,
     id="set_false_job",  # Unique job ID
-    trigger=CronTrigger(day_of_week="wed", hour=16, minute=40, timezone=IST),
+    trigger=CronTrigger(day_of_week="wed", hour=17, minute=10, timezone=IST),
     kwargs={"action": "set_false"}
 )
 
@@ -41,7 +37,7 @@ scheduler.add_job(
 scheduler.add_job(
     rotate_logs,
     id="log_rotation_job",  # Unique job ID
-    trigger=CronTrigger(day=22, hour=17, minute=00, timezone=IST)
+    trigger=CronTrigger(day=22, hour=17, minute=20, timezone=IST)
 )
 
 # Function to check the status of jobs
@@ -55,21 +51,21 @@ def monitor_jobs():
                 scheduler.add_job(
                     main,
                     id="set_true_job",
-                    trigger=CronTrigger(day_of_week="wed", hour=16, minute=30, timezone=IST),
+                    trigger=CronTrigger(day_of_week="wed", hour=17, minute=00, timezone=IST),
                     kwargs={"action": "set_true"}
                 )
             elif job.id == "set_false_job":
                 scheduler.add_job(
                     main,
                     id="set_false_job",
-                    trigger=CronTrigger(day_of_week="wed", hour=16, minute=40, timezone=IST),
+                    trigger=CronTrigger(day_of_week="wed", hour=17, minute=10, timezone=IST),
                     kwargs={"action": "set_false"}
                 )
             elif job.id == "log_rotation_job":
                 scheduler.add_job(
                     rotate_logs,
                     id="log_rotation_job",
-                    trigger=CronTrigger(day=22, hour=17, minute=00, timezone=IST)
+                    trigger=CronTrigger(day=22, hour=17, minute=20, timezone=IST)
                 )
             print(f"Job {job.id} restarted.")
         else:
