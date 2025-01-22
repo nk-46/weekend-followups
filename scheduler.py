@@ -21,7 +21,7 @@ scheduler = BackgroundScheduler()
 scheduler.add_job(
     main,
     id="set_true_job",  # Unique job ID
-    trigger=CronTrigger(day_of_week="wed", hour=18, minute=38, timezone=IST),
+    trigger=CronTrigger(day_of_week="wed", hour=18, minute=49, timezone=IST),
     kwargs={"action": "set_true"}
 )
 
@@ -37,7 +37,7 @@ scheduler.add_job(
 scheduler.add_job(
     rotate_logs,
     id="log_rotation_job",  # Unique job ID
-    trigger=CronTrigger(day=22, hour=18, minute=49, timezone=IST)
+    trigger=CronTrigger(day=22, hour=18, minute=54, timezone=IST)
 )
 
 # Function to check the status of jobs
@@ -51,7 +51,7 @@ def monitor_jobs():
                 scheduler.add_job(
                     main,
                     id="set_true_job",
-                    trigger=CronTrigger(day_of_week="wed", hour=18, minute=38, timezone=IST),
+                    trigger=CronTrigger(day_of_week="wed", hour=18, minute=49, timezone=IST),
                     kwargs={"action": "set_true"}
                 )
             elif job.id == "set_false_job":
@@ -65,7 +65,7 @@ def monitor_jobs():
                 scheduler.add_job(
                     rotate_logs,
                     id="log_rotation_job",
-                    trigger=CronTrigger(day=22, hour=18, minute=49, timezone=IST)
+                    trigger=CronTrigger(day=22, hour=18, minute=54, timezone=IST)
                 )
             print(f"Job {job.id} restarted.")
         else:
