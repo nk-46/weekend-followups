@@ -8,11 +8,16 @@ import csv
 import gzip
 import shutil
 import csv
+from dotenv import load_dotenv
 
 # Setup logging
-LOG_FILE = "/data/zendesk_weekend_check.log"
-DB_PATH = "/data/tickets.db"
-ARCHIVE_FOLDER = "/data/archives"
+#LOG_FILE = "/data/zendesk_weekend_check.log"
+#DB_PATH = "/data/tickets.db"
+#ARCHIVE_FOLDER = "/data/archives"
+
+LOG_FILE = "zendesk_weekend_check.log"
+DB_PATH = "tickets.db"
+ARCHIVE_FOLDER = "archives"
 
 os.makedirs(ARCHIVE_FOLDER, exist_ok=True) #ensure archives folder exists 
 
