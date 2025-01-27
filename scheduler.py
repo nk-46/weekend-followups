@@ -11,7 +11,7 @@ from avoid_weekend_followups import main, rotate_logs  # Import the main functio
 IST = timezone("Asia/Kolkata")
 
 #Initialize Flask
-#app = Flask(__name__)
+app = Flask(__name__)
 
 # Initialize BackgroundScheduler
 scheduler = BackgroundScheduler()
@@ -21,7 +21,7 @@ scheduler = BackgroundScheduler()
 scheduler.add_job(
     main,
     id="set_true_job",  # Unique job ID
-    trigger=CronTrigger(day_of_week="sat", hour=19, minute=0, timezone=IST),
+    trigger=CronTrigger(day_of_week="sat", hour=5, minute=0, timezone=IST),
     misfire_grace_time=300,
     kwargs={"action": "set_true"}
 )
@@ -79,7 +79,8 @@ def monitor_jobs():
 
 # Start the scheduler
 if __name__ == "__main__":
-    #app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 8080)))
+    app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 8080)))
+    
     # Initialize BackgroundScheduler
     print("Scheduler is running...")
     scheduler.start()
