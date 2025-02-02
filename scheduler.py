@@ -79,11 +79,12 @@ def monitor_jobs():
 
 # Start the scheduler
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 8080)))
     
     # Initialize BackgroundScheduler
     print("Scheduler is running...")
     scheduler.start()
+    #Starting Flask after starting the scheduler so that scheduler is not blocked.
+    app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 8080)), debug=False, use_reloader=False)
 
     try:
         while True:
