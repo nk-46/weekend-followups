@@ -1,7 +1,7 @@
 import sqlite3
 
 #connect to database
-conn = sqlite3.Connection('/datatickets.db')
+conn = sqlite3.Connection('/data/tickets.db')
 
 #create cursor
 c = conn.cursor()
