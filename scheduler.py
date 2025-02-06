@@ -5,6 +5,7 @@ from pytz import timezone
 import time
 import os
 from flask import Flask
+import threading
 from avoid_weekend_followups import main, rotate_logs  # Import the main function from avoid_weekend_followups.py
 
 # Define the timezone
@@ -21,7 +22,7 @@ scheduler = BackgroundScheduler()
 scheduler.add_job(
     main,
     id="set_true_job",  # Unique job ID
-    trigger=CronTrigger(day_of_week="sun", hour=8, minute=0, timezone=IST),
+    trigger=CronTrigger(day_of_week="sat", hour=5, minute=0, timezone=IST),
     misfire_grace_time=300,
     kwargs={"action": "set_true"}
 )
@@ -54,7 +55,7 @@ def monitor_jobs():
                 scheduler.add_job(
                     main,
                     id="set_true_job",
-                    trigger=CronTrigger(day_of_week="sun", hour=8, minute=0, timezone=IST),
+                    trigger=CronTrigger(day_of_week="sat", hour=5, minute=0, timezone=IST),
                     misfire_grace_time=300,
                     kwargs={"action": "set_true"}
                 )
@@ -83,8 +84,10 @@ if __name__ == "__main__":
     # Initialize BackgroundScheduler
     print("Scheduler is running...")
     scheduler.start()
-    #Starting Flask after starting the scheduler so that scheduler is not blocked.
-    app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 8080)), debug=False, use_reloader=False)
+
+    # Run Flask in a separate thread
+    flask_thread = threading.Thread(target=lambda: app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 8080)), use_reloader=False, debug=False))
+    flask_thread.start()
 
     try:
         while True:
