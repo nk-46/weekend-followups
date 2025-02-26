@@ -4,4 +4,6 @@ archives
 .DS_Store
 .env
 email_extract.py
+processed_tickets_archive.csvbackup_file.py
+scheduler_backup.py
 processed_tickets_archive.csv

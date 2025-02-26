@@ -10,9 +10,13 @@ import shutil
 import csv
 
 # Setup logging
-LOG_FILE = "/data/zendesk_weekend_check.log"
-DB_PATH = "/data/tickets.db"
-ARCHIVE_FOLDER = "/data/archives"
+LOG_FILE = "zendesk_weekend_check.log"
+DB_PATH = "tickets.db"
+ARCHIVE_FOLDER = "archives"
+
+#LOG_FILE = "zendesk_weekend_check.log"
+#DB_PATH = "tickets.db"
+#ARCHIVE_FOLDER = "archives"
 
 os.makedirs(ARCHIVE_FOLDER, exist_ok=True) #ensure archives folder exists 
 
@@ -23,15 +27,13 @@ logging.basicConfig(
     format="%(asctime)s - %(levelname)s - %(message)s"
 )
 
-# Database file for persistent storage
-#DB_PATH = "tickets.db"
-
 
 ZENDESK_SUBDOMAIN = os.getenv("ZENDESK_SUBDOMAIN")
 ZENDESK_EMAIL = os.getenv("ZENDESK_EMAIL")
 ZENDESK_API_TOKEN = os.getenv("ZENDESK_API_TOKEN")
 ZENDESK_VIEW_ID = os.getenv("ZENDESK_VIEW_ID")
 CHECKBOX_FIELD_ID = os.getenv("CHECKBOX_FIELD_ID")
+
 
 # Timezone
 IST = pytz.timezone("Asia/Kolkata")
@@ -74,11 +76,14 @@ def load_processed_tickets_and_archive():
     if tickets:
         archive_file = os.path.join(ARCHIVE_FOLDER, f"processed_tickets_archive.csv")
         # Get the current date
-        current_date = datetime.now().strftime('%Y-%m-%d')
-        with open(archive_file, "w", newline="") as csv_file:
+        current_date = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+        # Check if the file exists to determine if headers are needed
+        file_exists = os.path.isfile(archive_file)
+        with open(archive_file, "a", newline="") as csv_file:
             writer = csv.writer(csv_file)
             # Add headers for the columns
-            writer.writerow(["ticket_id", "date_processed"])
+            if not file_exists:
+                writer.writerow(["ticket_id", "date_processed"])
             writer.writerows([[ticket_id, current_date] for ticket_id in tickets])
         
         logging.info(f"Archived {len(tickets)} tickets to {archive_file}")
@@ -150,6 +155,8 @@ def get_pending_tickets():
 
 # Update the checkbox field on a ticket
 def update_ticket_checkbox(ticket_id, value):
+    current_date = datetime.now().strftime("%d-%m-%Y")
+    tags = ["weekend_pause", f"paused_on_{current_date}"]
     data = {
         "ticket": {
             "custom_fields": [
@@ -157,17 +164,18 @@ def update_ticket_checkbox(ticket_id, value):
                     "id": 39218804884633,
                     "value": value
                 }
-            ]
+            ],
+            "tags" : tags       #Adding new tags to track and give buffer time.
         }
     }
     if TEST_MODE:
-        print(f"[TEST MODE] Would update ticket {ticket_id} checkbox to {value}")
-        logging.info(f"[TEST MODE] Would update ticket {ticket_id} checkbox to {value}")
+        print(f"[TEST MODE] Would update ticket {ticket_id} checkbox to {value} and tags added would be {tags}")
+        logging.info(f"[TEST MODE] Would update ticket {ticket_id} checkbox to {value} and tags added would be {tags}")
     else:
         endpoint = f"/tickets/{ticket_id}.json"
         response = zendesk_request("put", endpoint, data)
         if response:
-            logging.info(f"Successfully updated Ticket ID: {ticket_id} to {'True' if value else 'False'}")
+            logging.info(f"Successfully updated Ticket ID: {ticket_id} to {'True' if value else 'False'} and added {tags} as tags")
         else:
             logging.error(f"Failed to update Ticket ID: {ticket_id}")
 
@@ -234,4 +242,3 @@ def main(action):
 
     else:
         logging.warning("No valid action specified.")
-

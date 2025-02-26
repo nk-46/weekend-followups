@@ -155,6 +155,8 @@ def get_pending_tickets():
 
 # Update the checkbox field on a ticket
 def update_ticket_checkbox(ticket_id, value):
+    current_date = datetime.now().strftime("%d-%m-%Y")
+    tags = ["weekend_pause", f"paused_on_{current_date}"]
     data = {
         "ticket": {
             "custom_fields": [
@@ -162,7 +164,8 @@ def update_ticket_checkbox(ticket_id, value):
                     "id": 39218804884633,
                     "value": value
                 }
-            ]
+            ],
+            "tags" : tags
         }
     }
     if TEST_MODE:
@@ -172,7 +175,7 @@ def update_ticket_checkbox(ticket_id, value):
         endpoint = f"/tickets/{ticket_id}.json"
         response = zendesk_request("put", endpoint, data)
         if response:
-            logging.info(f"Successfully updated Ticket ID: {ticket_id} to {'True' if value else 'False'}")
+            logging.info(f"Successfully updated Ticket ID: {ticket_id} to {'True' if value else 'False'} and added the tags {tags}" )
         else:
             logging.error(f"Failed to update Ticket ID: {ticket_id}")
 
