@@ -31,7 +31,7 @@ scheduler.add_job(
 scheduler.add_job(
     main,
     id="set_false_job",  # Unique job ID
-    trigger=CronTrigger(day_of_week="mon", hour=5, minute=0, timezone=IST),
+    trigger=CronTrigger(day_of_week="tue", hour=5, minute=0, timezone=IST),
     misfire_grace_time=300,
     kwargs={"action": "set_false"}
 )
@@ -55,7 +55,7 @@ def monitor_jobs():
                 scheduler.add_job(
                     main,
                     id="set_true_job",
-                    trigger=CronTrigger(day_of_week="wed", hour=15, minute=3, timezone=IST),
+                    trigger=CronTrigger(day_of_week="sat", hour=5, minute=0, timezone=IST),
                     misfire_grace_time=300,
                     kwargs={"action": "set_true"}
                 )
@@ -63,7 +63,7 @@ def monitor_jobs():
                 scheduler.add_job(
                     main,
                     id="set_false_job",
-                    trigger=CronTrigger(day_of_week="wed", hour=15, minute=6, timezone=IST),
+                    trigger=CronTrigger(day_of_week="tue", hour=5, minute=0, timezone=IST),
                     misfire_grace_time=300,
                     kwargs={"action": "set_false"}
                 )
