@@ -154,9 +154,17 @@ def get_pending_tickets():
     return all_tickets
 
 # Update the checkbox field on a ticket
-def update_ticket_checkbox(ticket_id, value):
+def update_ticket_checkbox(ticket_id, value, add_tags= None, remove_tags=None):
     current_date = datetime.now().strftime("%d-%m-%Y")
-    tags = ["weekend_pause", f"paused_on_{current_date}"]
+    
+    add_tags = []
+    remove_tags = []
+
+    if value:
+        #When setting the checkbox to True, add the tags
+        add_tags.extend(["weekend_pause", f"paused_on_{current_date}"])
+
+
     data = {
         "ticket": {
             "custom_fields": [
@@ -164,18 +172,22 @@ def update_ticket_checkbox(ticket_id, value):
                     "id": 39218804884633,
                     "value": value
                 }
-            ],
-            "tags" : tags
+            ]
         }
     }
+
+    if add_tags:
+        data["ticket"]["additional_tags"] = add_tags
+
+
     if TEST_MODE:
         print(f"[TEST MODE] Would update ticket {ticket_id} checkbox to {value}")
         logging.info(f"[TEST MODE] Would update ticket {ticket_id} checkbox to {value}")
     else:
         endpoint = f"/tickets/{ticket_id}.json"
-        response = zendesk_request("put", endpoint, data)
+        response = zendesk_request("patch", endpoint, data) #Use PATCH method to prevent overwriting exisiting fields
         if response:
-            logging.info(f"Successfully updated Ticket ID: {ticket_id} to {'True' if value else 'False'} and added the tags {tags}" )
+            logging.info(f"Successfully updated Ticket ID: {ticket_id} to {'True' if value else 'False'}, add tags- {add_tags}" )
         else:
             logging.error(f"Failed to update Ticket ID: {ticket_id}")
 
