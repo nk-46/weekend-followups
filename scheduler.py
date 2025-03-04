@@ -31,7 +31,7 @@ scheduler.add_job(
 scheduler.add_job(
     main,
     id="set_false_job",  # Unique job ID
-    trigger=CronTrigger(day_of_week="tue", hour=5, minute=0, timezone=IST),
+    trigger=CronTrigger(day_of_week="tue", hour=23, minute=30, timezone=IST),
     misfire_grace_time=300,
     kwargs={"action": "set_false"}
 )
