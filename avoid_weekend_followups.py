@@ -116,6 +116,8 @@ def zendesk_request(method, endpoint, data=None):
             response = requests.get(url, auth=auth, headers=headers)
         elif method.lower() == "put":
             response = requests.put(url, auth=auth, headers=headers, json=data)
+        elif method.lower() == "patch":
+            response = requests.patch(url, auth=auth, headers=headers, json=data)
         else:
             raise ValueError("Unsupported HTTP method")
 
@@ -229,7 +231,7 @@ def main(action):
         processed_ticket_ids = []
         for ticket in pending_tickets:
             ticket_id = ticket["id"]
-            update_ticket_checkbox(ticket_id, value=True)  # Set custom field to True
+            update_ticket_checkbox(ticket_id, value=True,add_tags=[],remove_tags=[])  # Set custom field to True
             processed_ticket_ids.append(ticket_id)
 
         # Save the ticket IDs to the database
@@ -246,7 +248,7 @@ def main(action):
             return
 
         for ticket_id in processed_ticket_ids:
-            update_ticket_checkbox(ticket_id, value=False)  # Set custom field to False
+            update_ticket_checkbox(ticket_id, value=False,add_tags=[],remove_tags=[])  # Set custom field to False
 
         # Clear the stored tickets after processing
         clear_processed_tickets()
