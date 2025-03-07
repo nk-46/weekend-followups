@@ -159,12 +159,26 @@ def get_pending_tickets():
 def update_ticket_checkbox(ticket_id, value, add_tags= None, remove_tags=None):
     current_date = datetime.now().strftime("%d-%m-%Y")
     
-    add_tags = []
-    remove_tags = []
+    add_tags = add_tags if add_tags is not None else []
+    remove_tags = remove_tags if remove_tags is not None else[]
 
     if value:
         #When setting the checkbox to True, add the tags
         add_tags.extend(["weekend_pause", f"paused_on_{current_date}"])
+
+    # Fetch the current ticket details from Zendesk
+    endpoint = f"/tickets/{ticket_id}.json"
+    response = zendesk_request("get", endpoint)
+
+    if response and "ticket" in response:
+        current_tags = response["ticket"].get("tags",[]) #get existing tags from the tickets.
+        logging.info(f"Current tags on the ticket {ticket_id}: {current_tags}")
+        
+        #Merge new tags with existing tags
+        updated_tags = list(set(current_tags + add_tags))               #Avoid duplicate tags
+
+        logging.info(f"Updated tags for the ticket {ticket_id}: {updated_tags}")
+
 
 
     data = {
@@ -174,12 +188,10 @@ def update_ticket_checkbox(ticket_id, value, add_tags= None, remove_tags=None):
                     "id": 39218804884633,
                     "value": value
                 }
-            ]
+            ],
+            "tags" :updated_tags #Update zendesk ticket tags.
         }
     }
-
-    if add_tags:
-        data["ticket"]["additional_tags"] = add_tags
 
 
     if TEST_MODE:
@@ -189,7 +201,7 @@ def update_ticket_checkbox(ticket_id, value, add_tags= None, remove_tags=None):
         endpoint = f"/tickets/{ticket_id}.json"
         response = zendesk_request("patch", endpoint, data) #Use PATCH method to prevent overwriting exisiting fields
         if response:
-            logging.info(f"Successfully updated Ticket ID: {ticket_id} to {'True' if value else 'False'}, add tags- {add_tags}" )
+            logging.info(f"Successfully updated Ticket ID: {ticket_id} to {'True' if value else 'False'}, add tags- {updated_tags}" )
         else:
             logging.error(f"Failed to update Ticket ID: {ticket_id}")
 
